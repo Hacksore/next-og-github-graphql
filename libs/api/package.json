@@ -1,0 +1,26 @@
+{
+  "name": "@acme/api",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "codegen": "graphql-codegen --config codegen.ts"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "devDependencies": {
+    "@graphql-codegen/cli": "4.0.1",
+    "@graphql-codegen/introspection": "4.0.0",
+    "@graphql-codegen/typescript": "4.0.1",
+    "@graphql-codegen/typescript-document-nodes": "4.0.1",
+    "@graphql-codegen/typescript-operations": "^4.0.1",
+    "@graphql-codegen/typescript-resolvers": "4.0.1"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.7.17",
+    "graphql": "^16.7.1"
+  }
+}

@@ -7153,6 +7153,20 @@ export type EnvironmentEdge = {
   node?: Maybe<Environment>;
 };
 
+/** Properties by which environments connections can be ordered */
+export enum EnvironmentOrderField {
+  /** Order environments by name. */
+  Name = 'NAME'
+}
+
+/** Ordering options for environments */
+export type Environments = {
+  /** The direction in which to order environments by the specified field. */
+  direction: OrderDirection;
+  /** The field to order environments by. */
+  field: EnvironmentOrderField;
+};
+
 /** An external identity provisioned by SAML SSO or SCIM. If SAML is configured on the organization, the external identity is visible to (1) organization owners, (2) organization owners' personal access tokens (classic) with read:org or admin:org scope, (3) GitHub App with an installation token with read or write access to members. If SAML is configured on the enterprise, the external identity is visible to (1) enterprise owners, (2) enterprise owners' personal access tokens (classic) with read:enterprise or admin:enterprise scope. */
 export type ExternalIdentity = Node & {
   __typename?: 'ExternalIdentity';
@@ -8095,7 +8109,7 @@ export enum IpAllowListForInstalledAppsEnabledSettingValue {
 export type IpAllowListOwner = App | Enterprise | Organization;
 
 /** An Issue is a place to discuss ideas, enhancements, tasks, and bugs for a project. */
-export type Issue = Assignable & Closable & Comment & Deletable & Labelable & Lockable & Node & ProjectV2Owner & Reactable & RepositoryNode & Subscribable & UniformResourceLocatable & Updatable & UpdatableComment & {
+export type Issue = Assignable & Closable & Comment & Deletable & Labelable & Lockable & Node & ProjectV2Owner & Reactable & RepositoryNode & Subscribable & SubscribableThread & UniformResourceLocatable & Updatable & UpdatableComment & {
   __typename?: 'Issue';
   /** Reason that the conversation was locked. */
   activeLockReason?: Maybe<LockReason>;
@@ -8217,6 +8231,10 @@ export type Issue = Assignable & Closable & Comment & Deletable & Labelable & Lo
   viewerDidAuthor: Scalars['Boolean']['output'];
   /** Identifies if the viewer is watching, not watching, or ignoring the subscribable entity. */
   viewerSubscription?: Maybe<SubscriptionState>;
+  /** Identifies the viewer's thread subscription form action. */
+  viewerThreadSubscriptionFormAction?: Maybe<ThreadSubscriptionFormAction>;
+  /** Identifies the viewer's thread subscription status. */
+  viewerThreadSubscriptionStatus?: Maybe<ThreadSubscriptionState>;
 };
 
 
@@ -13859,6 +13877,7 @@ export type OrganizationRepositoriesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  hasIssuesEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   isArchived?: InputMaybe<Scalars['Boolean']['input']>;
   isFork?: InputMaybe<Scalars['Boolean']['input']>;
   isLocked?: InputMaybe<Scalars['Boolean']['input']>;
@@ -13956,6 +13975,7 @@ export type OrganizationSponsorsActivitiesArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   includeAsSponsor?: InputMaybe<Scalars['Boolean']['input']>;
+  includePrivate?: InputMaybe<Scalars['Boolean']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<SponsorsActivityOrder>;
   period?: InputMaybe<SponsorsActivityPeriod>;
@@ -20610,6 +20630,7 @@ export type RepositoryEnvironmentsArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Environments>;
 };
 
 
@@ -20619,6 +20640,7 @@ export type RepositoryForksArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  hasIssuesEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   isLocked?: InputMaybe<Scalars['Boolean']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<RepositoryOrder>;
@@ -21433,6 +21455,7 @@ export type RepositoryOwnerRepositoriesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  hasIssuesEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   isArchived?: InputMaybe<Scalars['Boolean']['input']>;
   isFork?: InputMaybe<Scalars['Boolean']['input']>;
   isLocked?: InputMaybe<Scalars['Boolean']['input']>;
@@ -23049,6 +23072,7 @@ export type SponsorableSponsorsActivitiesArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   includeAsSponsor?: InputMaybe<Scalars['Boolean']['input']>;
+  includePrivate?: InputMaybe<Scalars['Boolean']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<SponsorsActivityOrder>;
   period?: InputMaybe<SponsorsActivityPeriod>;
@@ -24517,6 +24541,15 @@ export type Subscribable = {
   viewerSubscription?: Maybe<SubscriptionState>;
 };
 
+/** Entities that can be subscribed to for web and email notifications. */
+export type SubscribableThread = {
+  id: Scalars['ID']['output'];
+  /** Identifies the viewer's thread subscription form action. */
+  viewerThreadSubscriptionFormAction?: Maybe<ThreadSubscriptionFormAction>;
+  /** Identifies the viewer's thread subscription status. */
+  viewerThreadSubscriptionStatus?: Maybe<ThreadSubscriptionState>;
+};
+
 /** Represents a 'subscribed' event on a given `Subscribable`. */
 export type SubscribedEvent = Node & {
   __typename?: 'SubscribedEvent';
@@ -25586,6 +25619,38 @@ export type TextMatchHighlight = {
   text: Scalars['String']['output'];
 };
 
+/** The possible states of a thread subscription form action */
+export enum ThreadSubscriptionFormAction {
+  /** The User cannot subscribe or unsubscribe to the thread */
+  None = 'NONE',
+  /** The User can subscribe to the thread */
+  Subscribe = 'SUBSCRIBE',
+  /** The User can unsubscribe to the thread */
+  Unsubscribe = 'UNSUBSCRIBE'
+}
+
+/** The possible states of a subscription. */
+export enum ThreadSubscriptionState {
+  /** The subscription status is currently disabled. */
+  Disabled = 'DISABLED',
+  /** The User is never notified because they are ignoring the list */
+  IgnoringList = 'IGNORING_LIST',
+  /** The User is never notified because they are ignoring the thread */
+  IgnoringThread = 'IGNORING_THREAD',
+  /** The User is not recieving notifications from this thread */
+  None = 'NONE',
+  /** The User is notified becuase they are watching the list */
+  SubscribedToList = 'SUBSCRIBED_TO_LIST',
+  /** The User is notified because they are subscribed to the thread */
+  SubscribedToThread = 'SUBSCRIBED_TO_THREAD',
+  /** The User is notified because they chose custom settings for this thread. */
+  SubscribedToThreadEvents = 'SUBSCRIBED_TO_THREAD_EVENTS',
+  /** The User is notified because they chose custom settings for this thread. */
+  SubscribedToThreadType = 'SUBSCRIBED_TO_THREAD_TYPE',
+  /** The subscription status is currently unavailable. */
+  Unavailable = 'UNAVAILABLE'
+}
+
 /** A topic aggregates entities that are related to a subject. */
 export type Topic = Node & Starrable & {
   __typename?: 'Topic';
@@ -25624,6 +25689,7 @@ export type TopicRepositoriesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  hasIssuesEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   isLocked?: InputMaybe<Scalars['Boolean']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<RepositoryOrder>;
@@ -27882,6 +27948,7 @@ export type UserRepositoriesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  hasIssuesEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   isArchived?: InputMaybe<Scalars['Boolean']['input']>;
   isFork?: InputMaybe<Scalars['Boolean']['input']>;
   isLocked?: InputMaybe<Scalars['Boolean']['input']>;
@@ -27898,6 +27965,7 @@ export type UserRepositoriesContributedToArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   contributionTypes?: InputMaybe<Array<InputMaybe<RepositoryContributionType>>>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  hasIssues?: InputMaybe<Scalars['Boolean']['input']>;
   includeUserRepositories?: InputMaybe<Scalars['Boolean']['input']>;
   isLocked?: InputMaybe<Scalars['Boolean']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
@@ -27984,6 +28052,7 @@ export type UserSponsorsActivitiesArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   includeAsSponsor?: InputMaybe<Scalars['Boolean']['input']>;
+  includePrivate?: InputMaybe<Scalars['Boolean']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<SponsorsActivityOrder>;
   period?: InputMaybe<SponsorsActivityPeriod>;
@@ -28074,6 +28143,7 @@ export type UserWatchingArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  hasIssuesEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   isLocked?: InputMaybe<Scalars['Boolean']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<RepositoryOrder>;
@@ -28669,6 +28739,7 @@ export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
   Sponsorable: ( Organization ) | ( User );
   Starrable: ( Gist ) | ( Omit<Repository, 'issueOrPullRequest'> & { issueOrPullRequest?: Maybe<RefType['IssueOrPullRequest']> } ) | ( Topic );
   Subscribable: ( Commit ) | ( Discussion ) | ( Issue ) | ( PullRequest ) | ( Omit<Repository, 'issueOrPullRequest'> & { issueOrPullRequest?: Maybe<RefType['IssueOrPullRequest']> } ) | ( Team ) | ( TeamDiscussion );
+  SubscribableThread: ( Issue );
   TeamAuditEntryData: ( OrgRestoreMemberMembershipTeamAuditEntryData ) | ( Omit<TeamAddMemberAuditEntry, 'actor'> & { actor?: Maybe<RefType['AuditEntryActor']> } ) | ( Omit<TeamAddRepositoryAuditEntry, 'actor'> & { actor?: Maybe<RefType['AuditEntryActor']> } ) | ( Omit<TeamChangeParentTeamAuditEntry, 'actor'> & { actor?: Maybe<RefType['AuditEntryActor']> } ) | ( Omit<TeamRemoveMemberAuditEntry, 'actor'> & { actor?: Maybe<RefType['AuditEntryActor']> } ) | ( Omit<TeamRemoveRepositoryAuditEntry, 'actor'> & { actor?: Maybe<RefType['AuditEntryActor']> } );
   TopicAuditEntryData: ( Omit<RepoAddTopicAuditEntry, 'actor'> & { actor?: Maybe<RefType['AuditEntryActor']> } ) | ( Omit<RepoRemoveTopicAuditEntry, 'actor'> & { actor?: Maybe<RefType['AuditEntryActor']> } );
   UniformResourceLocatable: ( Bot ) | ( CheckRun ) | ( Omit<ClosedEvent, 'closer'> & { closer?: Maybe<RefType['Closer']> } ) | ( Commit ) | ( ConvertToDraftEvent ) | ( Omit<CrossReferencedEvent, 'source' | 'target'> & { source: RefType['ReferencedSubject'], target: RefType['ReferencedSubject'] } ) | ( Gist ) | ( Issue ) | ( Mannequin ) | ( MergedEvent ) | ( Milestone ) | ( Organization ) | ( PullRequest ) | ( PullRequestCommit ) | ( ReadyForReviewEvent ) | ( Release ) | ( Omit<Repository, 'issueOrPullRequest'> & { issueOrPullRequest?: Maybe<RefType['IssueOrPullRequest']> } ) | ( RepositoryTopic ) | ( ReviewDismissedEvent ) | ( TeamDiscussion ) | ( TeamDiscussionComment ) | ( User ) | ( Workflow ) | ( WorkflowRun ) | ( WorkflowRunFile );
@@ -29136,6 +29207,8 @@ export type ResolversTypes = {
   Environment: ResolverTypeWrapper<Environment>;
   EnvironmentConnection: ResolverTypeWrapper<EnvironmentConnection>;
   EnvironmentEdge: ResolverTypeWrapper<EnvironmentEdge>;
+  EnvironmentOrderField: EnvironmentOrderField;
+  Environments: Environments;
   ExternalIdentity: ResolverTypeWrapper<ExternalIdentity>;
   ExternalIdentityAttribute: ResolverTypeWrapper<ExternalIdentityAttribute>;
   ExternalIdentityConnection: ResolverTypeWrapper<ExternalIdentityConnection>;
@@ -29908,6 +29981,7 @@ export type ResolversTypes = {
   SubmoduleConnection: ResolverTypeWrapper<SubmoduleConnection>;
   SubmoduleEdge: ResolverTypeWrapper<SubmoduleEdge>;
   Subscribable: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Subscribable']>;
+  SubscribableThread: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['SubscribableThread']>;
   SubscribedEvent: ResolverTypeWrapper<SubscribedEvent>;
   SubscriptionState: SubscriptionState;
   SuggestedReviewer: ResolverTypeWrapper<SuggestedReviewer>;
@@ -29950,6 +30024,8 @@ export type ResolversTypes = {
   TeamRole: TeamRole;
   TextMatch: ResolverTypeWrapper<TextMatch>;
   TextMatchHighlight: ResolverTypeWrapper<TextMatchHighlight>;
+  ThreadSubscriptionFormAction: ThreadSubscriptionFormAction;
+  ThreadSubscriptionState: ThreadSubscriptionState;
   Topic: ResolverTypeWrapper<Topic>;
   TopicAuditEntryData: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['TopicAuditEntryData']>;
   TopicSuggestionDeclineReason: TopicSuggestionDeclineReason;
@@ -30561,6 +30637,7 @@ export type ResolversParentTypes = {
   Environment: Environment;
   EnvironmentConnection: EnvironmentConnection;
   EnvironmentEdge: EnvironmentEdge;
+  Environments: Environments;
   ExternalIdentity: ExternalIdentity;
   ExternalIdentityAttribute: ExternalIdentityAttribute;
   ExternalIdentityConnection: ExternalIdentityConnection;
@@ -31185,6 +31262,7 @@ export type ResolversParentTypes = {
   SubmoduleConnection: SubmoduleConnection;
   SubmoduleEdge: SubmoduleEdge;
   Subscribable: ResolversInterfaceTypes<ResolversParentTypes>['Subscribable'];
+  SubscribableThread: ResolversInterfaceTypes<ResolversParentTypes>['SubscribableThread'];
   SubscribedEvent: SubscribedEvent;
   SuggestedReviewer: SuggestedReviewer;
   Tag: Tag;
@@ -34297,6 +34375,8 @@ export type IssueResolvers<ContextType = any, ParentType extends ResolversParent
   viewerCannotUpdateReasons?: Resolver<Array<ResolversTypes['CommentCannotUpdateReason']>, ParentType, ContextType>;
   viewerDidAuthor?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerSubscription?: Resolver<Maybe<ResolversTypes['SubscriptionState']>, ParentType, ContextType>;
+  viewerThreadSubscriptionFormAction?: Resolver<Maybe<ResolversTypes['ThreadSubscriptionFormAction']>, ParentType, ContextType>;
+  viewerThreadSubscriptionStatus?: Resolver<Maybe<ResolversTypes['ThreadSubscriptionState']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -36038,7 +36118,7 @@ export type OrganizationResolvers<ContextType = any, ParentType extends Resolver
   samlIdentityProvider?: Resolver<Maybe<ResolversTypes['OrganizationIdentityProvider']>, ParentType, ContextType>;
   sponsoring?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<OrganizationSponsoringArgs, 'orderBy'>>;
   sponsors?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<OrganizationSponsorsArgs, 'orderBy'>>;
-  sponsorsActivities?: Resolver<ResolversTypes['SponsorsActivityConnection'], ParentType, ContextType, RequireFields<OrganizationSponsorsActivitiesArgs, 'actions' | 'includeAsSponsor' | 'orderBy' | 'period'>>;
+  sponsorsActivities?: Resolver<ResolversTypes['SponsorsActivityConnection'], ParentType, ContextType, RequireFields<OrganizationSponsorsActivitiesArgs, 'actions' | 'includeAsSponsor' | 'includePrivate' | 'orderBy' | 'period'>>;
   sponsorsListing?: Resolver<Maybe<ResolversTypes['SponsorsListing']>, ParentType, ContextType>;
   sponsorshipForViewerAsSponsor?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType, RequireFields<OrganizationSponsorshipForViewerAsSponsorArgs, 'activeOnly'>>;
   sponsorshipForViewerAsSponsorable?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType, RequireFields<OrganizationSponsorshipForViewerAsSponsorableArgs, 'activeOnly'>>;
@@ -38513,7 +38593,7 @@ export type RepositoryResolvers<ContextType = any, ParentType extends ResolversP
   discussions?: Resolver<ResolversTypes['DiscussionConnection'], ParentType, ContextType, RequireFields<RepositoryDiscussionsArgs, 'categoryId' | 'orderBy' | 'states'>>;
   diskUsage?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   environment?: Resolver<Maybe<ResolversTypes['Environment']>, ParentType, ContextType, RequireFields<RepositoryEnvironmentArgs, 'name'>>;
-  environments?: Resolver<ResolversTypes['EnvironmentConnection'], ParentType, ContextType, Partial<RepositoryEnvironmentsArgs>>;
+  environments?: Resolver<ResolversTypes['EnvironmentConnection'], ParentType, ContextType, RequireFields<RepositoryEnvironmentsArgs, 'orderBy'>>;
   forkCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   forkingAllowed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   forks?: Resolver<ResolversTypes['RepositoryConnection'], ParentType, ContextType, RequireFields<RepositoryForksArgs, 'ownerAffiliations'>>;
@@ -39409,7 +39489,7 @@ export type SponsorableResolvers<ContextType = any, ParentType extends Resolvers
   monthlyEstimatedSponsorsIncomeInCents?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   sponsoring?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<SponsorableSponsoringArgs, 'orderBy'>>;
   sponsors?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<SponsorableSponsorsArgs, 'orderBy'>>;
-  sponsorsActivities?: Resolver<ResolversTypes['SponsorsActivityConnection'], ParentType, ContextType, RequireFields<SponsorableSponsorsActivitiesArgs, 'actions' | 'includeAsSponsor' | 'orderBy' | 'period'>>;
+  sponsorsActivities?: Resolver<ResolversTypes['SponsorsActivityConnection'], ParentType, ContextType, RequireFields<SponsorableSponsorsActivitiesArgs, 'actions' | 'includeAsSponsor' | 'includePrivate' | 'orderBy' | 'period'>>;
   sponsorsListing?: Resolver<Maybe<ResolversTypes['SponsorsListing']>, ParentType, ContextType>;
   sponsorshipForViewerAsSponsor?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType, RequireFields<SponsorableSponsorshipForViewerAsSponsorArgs, 'activeOnly'>>;
   sponsorshipForViewerAsSponsorable?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType, RequireFields<SponsorableSponsorshipForViewerAsSponsorableArgs, 'activeOnly'>>;
@@ -39788,6 +39868,13 @@ export type SubscribableResolvers<ContextType = any, ParentType extends Resolver
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   viewerCanSubscribe?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerSubscription?: Resolver<Maybe<ResolversTypes['SubscriptionState']>, ParentType, ContextType>;
+};
+
+export type SubscribableThreadResolvers<ContextType = any, ParentType extends ResolversParentTypes['SubscribableThread'] = ResolversParentTypes['SubscribableThread']> = {
+  __resolveType: TypeResolveFn<'Issue', ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  viewerThreadSubscriptionFormAction?: Resolver<Maybe<ResolversTypes['ThreadSubscriptionFormAction']>, ParentType, ContextType>;
+  viewerThreadSubscriptionStatus?: Resolver<Maybe<ResolversTypes['ThreadSubscriptionState']>, ParentType, ContextType>;
 };
 
 export type SubscribedEventResolvers<ContextType = any, ParentType extends ResolversParentTypes['SubscribedEvent'] = ResolversParentTypes['SubscribedEvent']> = {
@@ -40845,7 +40932,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   socialAccounts?: Resolver<ResolversTypes['SocialAccountConnection'], ParentType, ContextType, Partial<UserSocialAccountsArgs>>;
   sponsoring?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<UserSponsoringArgs, 'orderBy'>>;
   sponsors?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<UserSponsorsArgs, 'orderBy'>>;
-  sponsorsActivities?: Resolver<ResolversTypes['SponsorsActivityConnection'], ParentType, ContextType, RequireFields<UserSponsorsActivitiesArgs, 'actions' | 'includeAsSponsor' | 'orderBy' | 'period'>>;
+  sponsorsActivities?: Resolver<ResolversTypes['SponsorsActivityConnection'], ParentType, ContextType, RequireFields<UserSponsorsActivitiesArgs, 'actions' | 'includeAsSponsor' | 'includePrivate' | 'orderBy' | 'period'>>;
   sponsorsListing?: Resolver<Maybe<ResolversTypes['SponsorsListing']>, ParentType, ContextType>;
   sponsorshipForViewerAsSponsor?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType, RequireFields<UserSponsorshipForViewerAsSponsorArgs, 'activeOnly'>>;
   sponsorshipForViewerAsSponsorable?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType, RequireFields<UserSponsorshipForViewerAsSponsorableArgs, 'activeOnly'>>;
@@ -41874,6 +41961,7 @@ export type Resolvers<ContextType = any> = {
   SubmoduleConnection?: SubmoduleConnectionResolvers<ContextType>;
   SubmoduleEdge?: SubmoduleEdgeResolvers<ContextType>;
   Subscribable?: SubscribableResolvers<ContextType>;
+  SubscribableThread?: SubscribableThreadResolvers<ContextType>;
   SubscribedEvent?: SubscribedEventResolvers<ContextType>;
   SuggestedReviewer?: SuggestedReviewerResolvers<ContextType>;
   Tag?: TagResolvers<ContextType>;

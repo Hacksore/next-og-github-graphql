@@ -4,35 +4,28 @@ import { getUserContributions } from "@acme/api";
 export const runtime = "edge";
 export async function GET() {
   const user = "Hacksore";
-  const response = await getUserContributions({ user });
+  const { data } = await getUserContributions({ user: user });
 
-  const { data } = response;
+  const weeklyContributions =
+    data.user.contributionsCollection.contributionCalendar.weeks;
+  const contributionsPerWeek = weeklyContributions.map(
+    (week) => week.contributionDays
+  );
 
   return new ImageResponse(
     (
-      <div
-        style={{
-          fontSize: 128,
-          fontWeight: "bold",
-          background: "white",
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-          backgroundColor: "#000",
-          color: "#fff",
-        }}
-      >
-        <div style={{ padding: 0, margin: 0 }}>{user}</div>
-        <p style={{ padding: 0, margin: 0 }}>
-          {
-            data.user.contributionsCollection.contributionCalendar
-              .totalContributions
-          }
-        </p>
-        <div style={{ color: "green" }}>Contributions</div>
+      <div tw="flex bg-black w-full h-full flex-row items-center justify-center">
+        <div tw="flex container mx-auto p-4">
+          <div tw="flex grid grid-cols-7 gap-2">
+            {contributionsPerWeek.map((week) =>
+              week.map((day) => {
+                return (
+                  <div style={{ width: 16, height: 16, background: day.color }}/>
+                ) 
+              })
+            )}
+          </div>
+        </div>
       </div>
     ),
     {

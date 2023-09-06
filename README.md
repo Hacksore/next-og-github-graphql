@@ -10,6 +10,7 @@ Then run `yarn codegen` and it will generate the schema and update.
 ### Usage
 
 Now you have a fully typeafe call 😎
-```
+
+```ts
 const response = await getUserContributions({ user: "Hacksore" });
-``
+```

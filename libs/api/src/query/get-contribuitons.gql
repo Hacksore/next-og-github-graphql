@@ -1,11 +1,16 @@
 query GetUserContributions ($login: String!) {
-  user (login: $login){
+  user (login: $login) {
     contributionsCollection {
       contributionCalendar {
         totalContributions,
+        colors,
         weeks {
           contributionDays {
-            contributionCount
+            contributionCount,
+            color,
+            date,
+            weekday,
+            contributionLevel,
           }
         }
       }

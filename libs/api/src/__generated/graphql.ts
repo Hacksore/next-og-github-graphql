@@ -28625,7 +28625,7 @@ export type GetUserContributionsQueryVariables = Exact<{
 }>;
 
 
-export type GetUserContributionsQuery = { __typename?: 'Query', user?: { __typename?: 'User', contributionsCollection: { __typename?: 'ContributionsCollection', contributionCalendar: { __typename?: 'ContributionCalendar', totalContributions: number, weeks: Array<{ __typename?: 'ContributionCalendarWeek', contributionDays: Array<{ __typename?: 'ContributionCalendarDay', contributionCount: number }> }> } } } | null };
+export type GetUserContributionsQuery = { __typename?: 'Query', user?: { __typename?: 'User', contributionsCollection: { __typename?: 'ContributionsCollection', contributionCalendar: { __typename?: 'ContributionCalendar', totalContributions: number, colors: Array<string>, weeks: Array<{ __typename?: 'ContributionCalendarWeek', contributionDays: Array<{ __typename?: 'ContributionCalendarDay', contributionCount: number, color: string, date: any, weekday: number, contributionLevel: ContributionLevel }> }> } } } | null };
 
 
 
@@ -42166,9 +42166,14 @@ export const GetUserContributions = gql`
     contributionsCollection {
       contributionCalendar {
         totalContributions
+        colors
         weeks {
           contributionDays {
             contributionCount
+            color
+            date
+            weekday
+            contributionLevel
           }
         }
       }

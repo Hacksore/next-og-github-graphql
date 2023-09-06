@@ -1,4 +1,6 @@
-module.exports = {
+const config = {
   reactStrictMode: true,
-  transpilePackages: ["ui"],
+  transpilePackages: [],
 };
+
+export default config;

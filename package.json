@@ -10,13 +10,13 @@
   "devDependencies": {
     "@turbo/gen": "^1.9.7",
     "eslint": "^7.32.0",
-    "eslint-config-custom": "*",
+    "eslint-config-custom": "workspace:*",
     "prettier": "^2.5.1",
     "turbo": "latest",
     "typescript": "^5.1.6"
   },
   "name": "next-og-github-graphql",
-  "packageManager": "yarn@1.22.19",
+  "packageManager": "pnpm@10.10.0",
   "workspaces": [
     "apps/*",
     "libs/*",

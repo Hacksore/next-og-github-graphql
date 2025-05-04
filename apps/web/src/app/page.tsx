@@ -24,7 +24,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 }
 
 export default async function Page({ searchParams }: Props) {
-  const user = searchParams.user as string || "Hacksore";
+  const user = await searchParams.user as string || "Hacksore";
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-black relative">

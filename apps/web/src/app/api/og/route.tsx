@@ -1,5 +1,6 @@
 import { ImageResponse } from "@vercel/og";
 import { getUserContributions } from "@acme/api";
+import { NextRequest } from "next/server";
 
 export const runtime = "edge";
 
@@ -21,8 +22,10 @@ const getContributionColor = (level: string) => {
   }
 };
 
-export async function GET() {
-  const user = "Hacksore";
+export async function GET(request: NextRequest) {
+
+  const searchParams = request.nextUrl.searchParams
+  const user = searchParams.get("user") || "Hacksore";
   const { data } = await getUserContributions({ user: user });
 
   // all 52 weeks of contributions

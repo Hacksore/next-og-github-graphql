@@ -8,7 +8,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
-  const user = resolvedParams.user[0] || "Hacksore";
+  const user = resolvedParams?.user || "Hacksore";
   
   return {
     title: `${user}'s GitHub Contributions`,
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Page({ params }: Props) {
   const resolvedParams = await params;
-  const user = resolvedParams.user[0] || "Hacksore";
+  const user = resolvedParams?.user || "Hacksore";
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-black relative">

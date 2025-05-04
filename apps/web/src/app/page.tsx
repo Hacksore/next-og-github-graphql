@@ -10,7 +10,7 @@ export default async function Page() {
             GitHub Graph OG Image
           </h1>
           <p className="text-xl text-white max-w-2xl mx-auto">
-            Generate beautiful Open Graph images using your GitHub contribution data. Perfect for social media sharing.
+            Generate beautiful Open Graph images using your GitHub contribution data.
           </p>
         </div>
 

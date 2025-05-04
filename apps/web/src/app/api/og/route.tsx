@@ -34,14 +34,16 @@ export async function GET() {
 
   return new ImageResponse(
     (
-      <div tw="flex bg-black w-full h-full flex-col items-center justify-center p-8">
+      <div tw="flex bg-black w-full h-full flex-col items-center justify-between p-8">
         <div tw="flex flex-col">
           {/* Title */}
-          <div tw="flex text-white text-4xl mb-8 font-bold">
-            {user}'s GitHub Contributions
+          <div tw="flex text-white text-4xl">
+            <span tw="font-black text-5xl">{user}</span>
           </div>
-          
-          {/* Contribution Graph */}
+        </div>
+        
+        {/* Contribution Graph */}
+        <div tw="flex flex-col">
           <div tw="flex flex-row">
             {/* Days of week labels */}
             <div tw="flex flex-col mr-2">

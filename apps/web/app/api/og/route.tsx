@@ -2,6 +2,25 @@ import { ImageResponse } from "@vercel/og";
 import { getUserContributions } from "@acme/api";
 
 export const runtime = "edge";
+
+// Color mapping based on contribution level
+const getContributionColor = (level: string) => {
+  switch (level) {
+    case "NONE":
+      return "#161b22"; // Dark background
+    case "FIRST_QUARTILE":
+      return "#0e4429"; // Dark green
+    case "SECOND_QUARTILE":
+      return "#006d32"; // Medium green
+    case "THIRD_QUARTILE":
+      return "#26a641"; // Bright green
+    case "FOURTH_QUARTILE":
+      return "#39d353"; // Brightest green
+    default:
+      return "#161b22"; // Default dark background
+  }
+};
+
 export async function GET() {
   const user = "Hacksore";
   const { data } = await getUserContributions({ user: user });
@@ -41,7 +60,7 @@ export async function GET() {
                     <div
                       key={day.date}
                       tw="flex w-4 h-4 mb-1 rounded-sm"
-                      style={{ backgroundColor: day.color }}
+                      style={{ backgroundColor: getContributionColor(day.contributionLevel) }}
                     />
                   ))}
                 </div>

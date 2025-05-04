@@ -2,11 +2,12 @@ import Link from "next/link";
 import { Metadata } from "next";
 
 type Props = {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
-  const user = searchParams.user as string || "Hacksore";
+  const params = await searchParams;
+  const user = params.user as string || "Hacksore";
   
   return {
     title: `${user}'s GitHub Contributions`,
@@ -24,7 +25,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 }
 
 export default async function Page({ searchParams }: Props) {
-  const user = await searchParams.user as string || "Hacksore";
+  const params = await searchParams;
+  const user = params.user as string || "Hacksore";
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-black relative">

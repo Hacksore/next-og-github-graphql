@@ -1,30 +1,16 @@
-import { getUserContributions } from "@acme/api";
-import Image from "next/image";
 import Link from "next/link";
 
 export default async function Page() {
-  const response = await getUserContributions({ user: "Hacksore" });
-
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-8">
-      <div className="max-w-4xl w-full space-y-8">
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
-            GitHub OG Image Generator
+    <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="max-w-4xl w-full space-y-12">
+        <div className="text-center space-y-6">
+          <h1 className="text-5xl sm:text-7xl font-bold tracking-tight bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent">
+            GitHub Graph in the OG Image
           </h1>
-          <p className="text-lg text-gray-600">
-            Generate beautiful Open Graph images using your GitHub contribution data
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Generate beautiful Open Graph images using your GitHub contribution data. Perfect for social media sharing.
           </p>
-        </div>
-
-        <div className="relative aspect-[1200/630] w-full overflow-hidden rounded-lg border border-gray-200 shadow-lg">
-          <Image
-            src="/api/og"
-            alt="GitHub Contribution Graph"
-            fill
-            className="object-cover"
-            priority
-          />
         </div>
 
         <div className="flex justify-center">
@@ -32,7 +18,7 @@ export default async function Page() {
             href="https://github.com/Hacksore/next-og-github-graphql"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-md bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-700"
+            className="inline-flex items-center gap-2 rounded-md bg-gray-900 px-6 py-3 text-base font-semibold text-white hover:bg-gray-800 transition-colors"
           >
             <svg
               className="h-5 w-5"

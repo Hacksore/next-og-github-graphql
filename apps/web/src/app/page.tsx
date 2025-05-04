@@ -2,13 +2,14 @@ import Link from "next/link";
 
 export default async function Page() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="max-w-4xl w-full space-y-12">
+    <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-black relative">
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff20_1px,transparent_1px),linear-gradient(to_bottom,#ffffff20_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+      <div className="max-w-4xl w-full space-y-12 relative z-10">
         <div className="text-center space-y-6">
-          <h1 className="text-5xl sm:text-7xl font-bold tracking-tight bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent">
-            GitHub Graph in the OG Image
+          <h1 className="text-5xl sm:text-7xl font-bold tracking-tight bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-600 bg-clip-text text-transparent p-1">
+            GitHub Graph OG Image
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-white max-w-2xl mx-auto">
             Generate beautiful Open Graph images using your GitHub contribution data. Perfect for social media sharing.
           </p>
         </div>
@@ -18,7 +19,7 @@ export default async function Page() {
             href="https://github.com/Hacksore/next-og-github-graphql"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-md bg-gray-900 px-6 py-3 text-base font-semibold text-white hover:bg-gray-800 transition-colors"
+            className="inline-flex items-center gap-2 rounded-md bg-gradient-to-r from-emerald-500 to-blue-500 px-6 py-3 text-base font-semibold text-white hover:from-emerald-600 hover:to-blue-600 transition-all shadow-lg hover:shadow-emerald-500/20"
           >
             <svg
               className="h-5 w-5"

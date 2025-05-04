@@ -1,6 +1,31 @@
 import Link from "next/link";
+import { Metadata } from "next";
 
-export default async function Page() {
+type Props = {
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const user = searchParams.user as string || "Hacksore";
+  
+  return {
+    title: `${user}'s GitHub Contributions`,
+    description: `View ${user}'s GitHub contribution graph`,
+    openGraph: {
+      images: [
+        {
+          url: `/api/og?user=${user}`,
+          width: 1200,
+          height: 600,
+        },
+      ],
+    },
+  };
+}
+
+export default async function Page({ searchParams }: Props) {
+  const user = searchParams.user as string || "Hacksore";
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-black relative">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff20_1px,transparent_1px),linear-gradient(to_bottom,#ffffff20_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
@@ -14,7 +39,31 @@ export default async function Page() {
           </p>
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center gap-8">
+          <form className="flex gap-4 w-full max-w-md">
+            <input
+              type="text"
+              name="user"
+              placeholder="Enter GitHub username"
+              defaultValue={user}
+              className="flex-1 px-4 py-2 rounded-md bg-white/10 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+            <button
+              type="submit"
+              className="px-6 py-2 rounded-md bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold hover:from-emerald-600 hover:to-blue-600 transition-all"
+            >
+              Generate
+            </button>
+          </form>
+
+          <div className="relative w-full max-w-4xl aspect-[2/1] rounded-lg overflow-hidden">
+            <img
+              src={`/api/og?user=${user}`}
+              alt={`${user}'s GitHub contributions`}
+              className="w-full h-full object-cover"
+            />
+          </div>
+
           <Link
             href="https://github.com/Hacksore/next-og-github-graphql"
             target="_blank"

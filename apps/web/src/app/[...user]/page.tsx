@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { SearchForm } from "./search-form";
 
 type Props = {
-  params: Promise<{ user: string[] }>;
+  params: Promise<{ user: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
